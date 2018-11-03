@@ -1,6 +1,6 @@
 {
   "name": "@datkt/konanc-config",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Command line utility to read '*.kc' konanc config files to print compiler flags",
   "main": "index.js",
   "bin": {
