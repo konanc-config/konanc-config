@@ -18,7 +18,7 @@ function load(name, defaults, env) {
   return rc(name, defaults, { config }, (content) => {
     Object.assign(env, process.env, {
       __dirname: resolve(dirname(config)),
-      __filename: config,
+      __filename: resolve(config),
     })
     return parse(template(content))
   })
