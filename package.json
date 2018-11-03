@@ -1,0 +1,37 @@
+{
+  "name": "@datkt/konanc-config",
+  "version": "0.0.1",
+  "description": "Command line utility to read '*.kc' konanc config files to print compiler flags",
+  "main": "index.js",
+  "bin": {
+    "konanc-config": "bin/konanc-config"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "keywords": [
+    "konanc",
+    "config",
+    "kotlin",
+    "native",
+    "package",
+    "config",
+    "compiler",
+    "flags"
+  ],
+  "author": "Joseph Werle <werle@littlstar.com>",
+  "license": "MIT",
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "rc": "^1.2.8"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/datkt/konanc-config.git"
+  },
+  "bugs": {
+    "url": "https://github.com/datkt/konanc-config/issues"
+  },
+  "homepage": "https://github.com/datkt/konanc-config#readme"
+}

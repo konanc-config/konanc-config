@@ -1,0 +1,81 @@
+#!/usr/bin/env node
+const minimist = require('minimist')
+const pkg = require('../package.json')
+const kcc = require('../')
+
+const argv = minimist(process.argv.slice(2), {
+  alias: {
+    h: 'help',
+    V: 'version',
+
+    l: 'library',
+    libs: 'library',
+    libraries: 'library',
+
+    r: 'repo',
+    repos: 'repo',
+    repositories: 'repo',
+  }
+})
+
+const usage = `usage: konanc-config: [-hV] [options] <configs>
+
+where options can be:
+
+  -h, --help                    Print this message
+  -V, --version                 Print program version
+  -c, --cflags                  Print compiler flags
+  -r, --repos, --repositories   Print repositories
+  -l --libs, --libraries        Print libraries
+
+report bugs to <${pkg.bugs.url}>. `
+
+if (argv.help) {
+  console.error(usage)
+  process.exit(0)
+}
+
+if (argv.version) {
+  console.log(pkg.version)
+  process.exit(0)
+}
+
+if (!argv._.length) {
+  console.error('error: Please specify at least one config path.')
+  console.error(usage)
+  process.exit(1)
+}
+
+const configs = argv._.map((config) => kcc.load(config))
+
+for (const config of configs) {
+  if (argv.cflags) {
+    printFlagBatch(null, config.cflags)
+  }
+
+  if (argv.repo) {
+    printFlagBatch('-r', config.repo)
+  }
+
+  if (argv.library) {
+    printFlagBatch('-l', config.library)
+  }
+}
+
+function printFlagBatch(flag, params) {
+  if ('string' == typeof params) {
+    params = [ params ]
+  }
+
+  if (Array.isArray(params)) {
+    for (const param of params) {
+      if (flag) {
+        process.stdout.write(`${flag} ${param}`)
+      } else {
+        process.stdout.write(param)
+      }
+
+      process.stdout.write(' ')
+    }
+  }
+}
