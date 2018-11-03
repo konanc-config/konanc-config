@@ -6,7 +6,7 @@ Command line utility to read `*.kc` konanc config files to print compiler flags.
 ## Installation
 
 ```sh
-$ npm install @datkt/konanc-config
+$ npm install @datkt/konanc-config -g
 ```
 
 ## Usage
