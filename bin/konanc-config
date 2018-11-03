@@ -51,6 +51,7 @@ if (!argv._.length) {
 }
 
 const configs = argv._.map((config) => kcc.load(config))
+const seen = []
 
 for (const config of configs) {
   if (argv.cflags) {
@@ -73,13 +74,12 @@ function printFlagBatch(flag, params) {
 
   if (Array.isArray(params)) {
     for (const param of params) {
-      if (flag) {
-        process.stdout.write(`${flag} ${param}`)
-      } else {
-        process.stdout.write(param)
+      const arg = flag ? `${flag} ${param}` : param
+      if (!seen.includes(arg)) {
+        seen.push(arg)
+        process.stdout.write(arg)
+        process.stdout.write(' ')
       }
-
-      process.stdout.write(' ')
     }
   }
 }
