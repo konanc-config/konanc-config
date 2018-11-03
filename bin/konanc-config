@@ -4,6 +4,7 @@ const pkg = require('../package.json')
 const kcc = require('../')
 
 const argv = minimist(process.argv.slice(2), {
+  boolean: ['library', 'repo', 'help', 'version', 'cflags'],
   alias: {
     h: 'help',
     V: 'version',
