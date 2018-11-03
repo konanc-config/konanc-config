@@ -9,6 +9,9 @@ const argv = minimist(process.argv.slice(2), {
     h: 'help',
     V: 'version',
 
+    c: 'cflags',
+    cflag: 'cflags',
+
     l: 'library',
     libs: 'library',
     libraries: 'library',
