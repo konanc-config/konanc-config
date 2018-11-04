@@ -34,7 +34,7 @@ function load(name, defaults, env) {
 
   if (Array.isArray(conf.repo)) {
     conf.repo = conf.repo.map((repo) => {
-      if (!PROTOCOL_REGEX.test(repo)) {
+      if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
         return resolve(dirname(config), repo)
       } else {
         return repo
