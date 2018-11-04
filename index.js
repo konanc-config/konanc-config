@@ -6,6 +6,8 @@ const rc = require('rc')
 module.exports = load
 module.exports.load = load
 
+const PROTOCOL_REGEX = /[a-zA-Z0-9|+|-]+:\/\//
+
 function load(name, defaults, env) {
   if (!name || 'string' != typeof name) {
     throw new TypeError("Expecting name to be a non-empty string.")
@@ -23,6 +25,22 @@ function load(name, defaults, env) {
     })
     return parse(template(content))
   })
+
+  if ('string' == typeof conf.repo) {
+    if (!PROTOCOL_REGEX.test(conf.repo)) {
+      conf.repo = resolve(dirname(config), conf.repo)
+    }
+  }
+
+  if (Array.isArray(conf.repo)) {
+    conf.repo = conf.repo.map((repo) => {
+      if (!PROTOCOL_REGEX.test(repo)) {
+        return resolve(dirname(config), repo)
+      } else {
+        return repo
+      }
+    })
+  }
 
   if (conf.require && conf.require.length) {
     if (!Array.isArray(conf.require)) {
