@@ -7,7 +7,8 @@
     "konanc-config": "bin/konanc-config"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "build": "pkg package.json -o build/konanc-config"
   },
   "keywords": [
     "konanc",
@@ -22,10 +23,13 @@
   "author": "Joseph Werle <werle@littlstar.com>",
   "license": "MIT",
   "dependencies": {
+    "find-up": "^3.0.0",
     "minimist": "^1.2.0",
     "rc": "^1.2.8"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "pkg": "^4.3.4"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/datkt/konanc-config.git"
@@ -33,5 +37,12 @@
   "bugs": {
     "url": "https://github.com/datkt/konanc-config/issues"
   },
-  "homepage": "https://github.com/datkt/konanc-config#readme"
+  "homepage": "https://github.com/datkt/konanc-config#readme",
+  "pkg": {
+    "targets": [
+      "node10-linux-x64",
+      "node10-macos-x64",
+      "node10-win-x64"
+    ]
+  }
 }
