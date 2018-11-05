@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 const minimist = require('minimist')
+const debug = require('debug')('konanc-config')
 const pkg = require('../package.json')
 const kcc = require('../')
 
 const argv = minimist(process.argv.slice(2), {
-  boolean: ['library', 'repo', 'help', 'version', 'cflags'],
+  boolean: ['library', 'debug', 'repo', 'help', 'version', 'cflags'],
   alias: {
     h: 'help',
+    D: 'debug',
     V: 'version',
 
     c: 'cflags',
@@ -22,17 +24,22 @@ const argv = minimist(process.argv.slice(2), {
   }
 })
 
-const usage = `usage: konanc-config: [-hV] [options] <configs>
+const usage = `usage: konanc-config: [-hDV] [options] <configs>
 
 where options can be:
 
   -h, --help                    Print this message
+  -D, --debug                   Enable debug output
   -V, --version                 Print program version
   -c, --cflags                  Print compiler flags
   -r, --repos, --repositories   Print repositories
   -l --libs, --libraries        Print libraries
 
-report bugs to <${pkg.bugs.url}>. `
+
+Enable debug output by using the '-D, --debug' flag or set the
+'DEBUG=konanc-config' environment variable.
+
+Report bugs to <${pkg.bugs.url}>. `
 
 if (argv.help) {
   console.error(usage)
@@ -76,9 +83,12 @@ function printFlagBatch(flag, params) {
     for (const param of params) {
       const arg = flag ? `${flag} ${param}` : param
       if (!seen.includes(arg)) {
+        debug('flag:', arg)
         seen.push(arg)
         process.stdout.write(arg)
         process.stdout.write(' ')
+      } else {
+        debug('skipping seen flag:', arg)
       }
     }
   }
