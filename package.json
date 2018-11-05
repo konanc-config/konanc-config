@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "make test",
-    "build": "pkg package.json -o build/konanc-config"
+    "build": "pkg package.json -o build/konanc-config",
+    "changelog": "conventional-changelog --same-file --preset angular --release-count 0 --infile CHANGELOG.md",
+    "version": "npm run changelog && git add CHANGELOG.md"
   },
   "keywords": [
     "konanc",
@@ -28,6 +30,7 @@
     "rc": "^1.2.8"
   },
   "devDependencies": {
+    "conventional-changelog": "^3.0.5",
     "pkg": "^4.3.4"
   },
   "repository": {
