@@ -25,6 +25,7 @@
   "author": "Joseph Werle <werle@littlstar.com>",
   "license": "MIT",
   "dependencies": {
+    "debug": "^4.1.0",
     "find-up": "^3.0.0",
     "minimist": "^1.2.0",
     "rc": "^1.2.8"
