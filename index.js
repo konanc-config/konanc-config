@@ -14,6 +14,8 @@ function load(name, defaults, env) {
   }
 
   const config = '.kc' == extname(name) ? name : `${name}.kc`
+  const cwd = process.cwd()
+
   if (!env || 'object' != typeof env) {
     env = {}
   }
@@ -28,11 +30,22 @@ function load(name, defaults, env) {
 
   if ('string' == typeof conf.repo) {
     if (!PROTOCOL_REGEX.test(conf.repo)) {
-      conf.repo = resolve(dirname(config), conf.repo)
+      conf.repo = [ resolve(dirname(config), conf.repo) ]
+    } else {
+      conf.repo = [ conf.repo ]
     }
   }
 
   if (Array.isArray(conf.repo)) {
+    for (const repo of conf.repo) {
+      if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
+        const path = resolve(cwd, repo)
+        if (!conf.repo.includes(path)) {
+          conf.repo.push(path)
+        }
+      }
+    }
+
     conf.repo = conf.repo.map((repo) => {
       if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
         return resolve(dirname(config), repo)
