@@ -43,7 +43,7 @@ where `module.kc` is
 library[] = sodium/sodium
 library[] = tape/tape
 cflags[] = -opt
-repo[] = "${__dirname}/node_modules/@datkt"
+repo[] = "node_modules/@datkt"
 ```
 
 ## Writing A Config File
@@ -76,14 +76,14 @@ can be expressed by defining the `repo` variable. This intuitively maps
 to the `-repo` flag for the `konanc` command.
 
 ```ini
-repo = "${__dirname}/node_modules/@datkt/sodium"
+repo = "node_modules/@datkt/sodium"
 ```
 
 or multiple repositories
 
 ```ini
-repo[] = "${__dirname}/node_modules/@datkt/sodium"
-repo[] = "${__dirname}/node_modules/@datkt/tape"
+repo[] = "node_modules/@datkt/sodium"
+repo[] = "node_modules/@datkt/tape"
 ```
 
 ### Adding Compiler Flags
