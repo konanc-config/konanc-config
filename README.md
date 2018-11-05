@@ -76,7 +76,7 @@ repo = "${__dirname}/node_modules/@datkt/sodium"
 or multiple repositories
 
 ```ini
-repo[] = "${__dirname}/node_modules/@datkt/sodiumm"
+repo[] = "${__dirname}/node_modules/@datkt/sodium"
 repo[] = "${__dirname}/node_modules/@datkt/tape"
 ```
 
@@ -96,7 +96,25 @@ cflags[] = -opt
 cflags[] = -verbose
 ```
 
-### Environment/Global Variables
+### Requiring dependency configuration
+
+Requiring a dependency configuration can be expressed by defining the
+`require` variable. Dependencies can be a fully qualified path or
+relative to a repository.
+
+```ini
+require = "sodium/sodium"
+repo = "./node_modules/@datkt"
+```
+
+or with multiple cependencies
+
+```ini
+require[] = "sodium/sodium"
+require[] = "uint64be/uint64be"
+```
+
+### Environment and global variables
 
 Every configuration file gets access to current environment variables
 exposes to the program. Special `__dirname` and `__filename` free floating
