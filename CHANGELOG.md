@@ -1,3 +1,18 @@
+<a name="4.0.0"></a>
+# [4.0.0](https://github.com/datkt/konanc-config/compare/3.2.1...4.0.0) (2018-11-05)
+
+
+### Bug Fixes
+
+* **index.js:** Make resolution work with 'find-up' ([e162f03](https://github.com/datkt/konanc-config/commit/e162f03))
+
+
+### Features
+
+* **bin/konanc-config:** Enable debug output ([f8e743a](https://github.com/datkt/konanc-config/commit/f8e743a))
+
+
+
 <a name="3.2.1"></a>
 ## [3.2.1](https://github.com/datkt/konanc-config/compare/3.2.0...3.2.1) (2018-11-05)
 
