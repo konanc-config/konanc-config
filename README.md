@@ -9,6 +9,12 @@ Command line utility to read `*.kc` konanc config files to print compiler flags.
 $ npm install @datkt/konanc-config -g
 ```
 
+## Latest Release
+
+Prebuilt binaries for `konanc-config` are available for download for Linux,
+Windows, and macOS. They can be downloaded from the [latest
+release](https://github.com/datkt/konanc-config/releases/latest) page.
+
 ## Usage
 
 ```sh
@@ -40,13 +46,13 @@ cflags[] = -opt
 repo[] = "${__dirname}/node_modules/@datkt"
 ```
 
-## Writing a config file
+## Writing A Config File
 
 Configuration files for the `konanc-config` command are in INI or JSON
 format. Any property can be defined, but currently, the command only
 supports printing libraries, repositories, and compiler flags.
 
-### Adding libraries
+### Adding Libraries
 
 A library that should be linked against can be expressed by defining the
 `library` variable. This intuitively maps to the `-library` flag for the
@@ -63,7 +69,7 @@ library[] = sodium
 library[] = tape
 ```
 
-### Adding repositories
+### Adding Repositories
 
 A repository that should be used for searching library (`.klib`) files
 can be expressed by defining the `repo` variable. This intuitively maps
@@ -80,7 +86,7 @@ repo[] = "${__dirname}/node_modules/@datkt/sodium"
 repo[] = "${__dirname}/node_modules/@datkt/tape"
 ```
 
-### Adding compiler flags
+### Adding Compiler Flags
 
 Arbitrary compiler flags can be expressed by defining the `cflags`
 variable.
@@ -96,7 +102,7 @@ cflags[] = -opt
 cflags[] = -verbose
 ```
 
-### Requiring dependency configuration
+### Requiring Dependency Configuration
 
 Requiring a dependency configuration can be expressed by defining the
 `require` variable. Dependencies can be a fully qualified path or
@@ -114,7 +120,7 @@ require[] = "sodium/sodium"
 require[] = "uint64be/uint64be"
 ```
 
-### Environment and global variables
+### Environment & Global Rariables
 
 Every configuration file gets access to current environment variables
 exposes to the program. Special `__dirname` and `__filename` free floating
@@ -129,7 +135,7 @@ combination of the supported flags found in the usage help. Short flags
 can be used for brevity, like `konanc-config -clr library.kc`, in place
 of `konanc-config library.kc --cflags --libraries --repos`.
 
-### Printing library flags
+### Printing Library Flags
 
 To print library flags, use `-l`, `--libs`, or `--libraries` flags.
 
@@ -137,7 +143,7 @@ To print library flags, use `-l`, `--libs`, or `--libraries` flags.
 $ konanc-config library.kc --libs
 ```
 
-### Printing repository flags
+### Printing Repository Flags
 
 To print repository flags, use `-r`, `--repos`, or `--repositories` flags.
 
@@ -145,7 +151,7 @@ To print repository flags, use `-r`, `--repos`, or `--repositories` flags.
 $ konanc-config library.kc --repos
 ```
 
-### Printing compiler flags
+### Printing Compiler Flags
 
 To print compiler flags, use `-c` or `--cflags` flags.
 
