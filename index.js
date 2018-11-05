@@ -1,6 +1,8 @@
 const { extname, dirname, resolve } = require('path')
 const { existsSync } = require('fs')
 const { parse } = require('rc/lib/utils')
+const debug = require('debug')('konanc-config')
+const find = require('find-up').sync
 const rc = require('rc')
 
 module.exports = load
@@ -24,24 +26,41 @@ function load(name, defaults, env) {
     Object.assign(env, process.env, {
       __dirname: resolve(dirname(config)),
       __filename: resolve(config),
+      resolve(lookup) {
+        debug('resolve lookup:', lookup)
+        return find(lookup)
+      }
     })
+
     return parse(template(content))
   })
 
   if ('string' == typeof conf.repo) {
-    if (!PROTOCOL_REGEX.test(conf.repo)) {
-      conf.repo = [ resolve(dirname(config), conf.repo) ]
+    const { repo } = conf
+
+    if (!PROTOCOL_REGEX.test(repo)) {
+      conf.repo = [ resolve(dirname(config), repo) ]
     } else {
-      conf.repo = [ conf.repo ]
+      conf.repo = [ repo ]
+    }
+
+    if (!conf.repo.includes(repo)) {
+      conf.repo.push(repo)
     }
   }
 
   if (Array.isArray(conf.repo)) {
     for (const repo of conf.repo) {
       if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
-        const path = resolve(cwd, repo)
-        if (!conf.repo.includes(path)) {
+        const path = resolve(repo)
+        const found = find(repo)
+
+        if (path && !conf.repo.includes(path)) {
           conf.repo.push(path)
+        }
+
+        if (found && !conf.repo.includes(found)) {
+          conf.repo.push(found)
         }
       }
     }
@@ -67,7 +86,9 @@ function load(name, defaults, env) {
     for (const dep of conf.require) {
       merge(conf, load(dep, defaults, env))
       for (const repo of repos) {
-        merge(conf, load(resolve(repo, dep), defaults, env))
+        if (repo && 'string' === typeof repo) {
+          merge(conf, load(resolve(repo, dep), defaults, env))
+        }
       }
     }
   }
