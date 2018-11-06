@@ -1,3 +1,18 @@
+<a name="4.2.0"></a>
+# [4.2.0](https://github.com/datkt/konanc-config/compare/4.1.0...4.2.0) (2018-11-06)
+
+
+### Bug Fixes
+
+* **bin/konanc-config:** Fix broken '--debug' flag not being honored ([3276c85](https://github.com/datkt/konanc-config/commit/3276c85))
+
+
+### Features
+
+* **index.js:** Filter out repo paths that are not directories or URLS ([47e50bf](https://github.com/datkt/konanc-config/commit/47e50bf))
+
+
+
 <a name="4.1.0"></a>
 # [4.1.0](https://github.com/datkt/konanc-config/compare/4.0.1...4.1.0) (2018-11-06)
 
