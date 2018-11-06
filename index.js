@@ -9,6 +9,7 @@ module.exports = load
 module.exports.load = load
 
 const PROTOCOL_REGEX = /[a-zA-Z0-9|+|-]+:\/\//
+const PREFIX = process.env.PREFIX || 'node_modules/'
 
 function load(name, defaults, env) {
   if (!name || 'string' != typeof name) {
@@ -50,6 +51,14 @@ function load(name, defaults, env) {
   }
 
   if (Array.isArray(conf.repo)) {
+    // add prefixed repos
+    for (const repo of conf.repo.slice()) {
+      const prefixed = PREFIX + repo
+      if (!conf.repo.includes(prefixed)) {
+        conf.repo.push(prefixed)
+      }
+    }
+
     for (const repo of conf.repo) {
       if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
         const path = resolve(repo)
@@ -59,7 +68,7 @@ function load(name, defaults, env) {
           conf.repo.push(path)
         }
 
-        if (found && !conf.repo.includes(found)) {
+        if ('/' != repo[0] && found && !conf.repo.includes(found)) {
           conf.repo.push(found)
         }
       }
