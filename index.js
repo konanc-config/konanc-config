@@ -1,5 +1,5 @@
 const { extname, dirname, resolve } = require('path')
-const { existsSync } = require('fs')
+const { accessSync, statSync } = require('fs')
 const { parse } = require('rc/lib/utils')
 const debug = require('debug')('konanc-config')
 const find = require('find-up').sync
@@ -79,6 +79,20 @@ function load(name, defaults, env) {
         return resolve(dirname(config), repo)
       } else {
         return repo
+      }
+    })
+
+    conf.repo = conf.repo.filter((repo) => {
+      if ('string' == typeof repo && PROTOCOL_REGEX.test(repo)) {
+        return true
+      }
+
+      try {
+        accessSync(repo)
+        return statSync(repo).isDirectory()
+      } catch (err) {
+        debug(err)
+        return false
       }
     })
   }
