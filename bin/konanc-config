@@ -41,6 +41,10 @@ Enable debug output by using the '-D, --debug' flag or set the
 
 Report bugs to <${pkg.bugs.url}>. `
 
+if (argv.debug) {
+  require('debug').enable('konanc-config')
+}
+
 if (argv.help) {
   console.error(usage)
   process.exit(0)
