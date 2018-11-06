@@ -57,10 +57,23 @@ if (!argv._.length) {
   process.exit(1)
 }
 
-const configs = argv._.map((config) => kcc.load(config))
+let configs = null
+let loaded = false
 const seen = []
 
+try {
+  configs = argv._.map((config) => kcc.load(config))
+} catch (err) {
+  debug(err.stack || err)
+  console.error('error:', err.message)
+  process.exit(1)
+}
+
 for (const config of configs) {
+  if (!loaded && config.configs && config.configs.length) {
+    loaded = true
+  }
+
   if (argv.cflags) {
     printFlagBatch(null, config.cflags)
   }
@@ -72,6 +85,11 @@ for (const config of configs) {
   if (argv.library) {
     printFlagBatch('-l', config.library)
   }
+}
+
+if (!loaded) {
+  console.error('error: Could not find configs to load for:', argv._.join(' '))
+  process.exit(1)
 }
 
 function printFlagBatch(flag, params) {
