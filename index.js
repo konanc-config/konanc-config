@@ -129,9 +129,11 @@ function load(name, defaults, env) {
       const prefixed = prefix + dep
       merge(conf, load(dep, defaults, env))
       merge(conf, load(prefixed, defaults, env))
-      for (const repo of repos) {
-        if (repo && 'string' === typeof repo) {
-          merge(conf, load(resolve(repo, dep), defaults, env))
+      if (Array.isArray(repos)) {
+        for (const repo of repos) {
+          if (repo && 'string' === typeof repo) {
+            merge(conf, load(resolve(repo, dep), defaults, env))
+          }
         }
       }
     }
