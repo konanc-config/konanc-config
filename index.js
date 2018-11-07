@@ -47,6 +47,14 @@ function load(name, defaults, env) {
     return parse(template(content))
   })
 
+  if ('string' == typeof conf.library) {
+    conf.library = [ conf.library ]
+  }
+
+  if ('string' == typeof conf.require) {
+    conf.require = [ conf.require ]
+  }
+
   if ('string' == typeof conf.repo) {
     const { repo } = conf
 
@@ -118,7 +126,9 @@ function load(name, defaults, env) {
       : conf.repo)
 
     for (const dep of conf.require) {
+      const prefixed = prefix + dep
       merge(conf, load(dep, defaults, env))
+      merge(conf, load(prefixed, defaults, env))
       for (const repo of repos) {
         if (repo && 'string' === typeof repo) {
           merge(conf, load(resolve(repo, dep), defaults, env))
