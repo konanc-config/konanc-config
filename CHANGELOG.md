@@ -1,3 +1,13 @@
+<a name="5.0.1"></a>
+## [5.0.1](https://github.com/datkt/konanc-config/compare/5.0.0...5.0.1) (2018-11-07)
+
+
+### Bug Fixes
+
+* **index.js:** Convert string to single item array to fix merging ([5a7d90e](https://github.com/datkt/konanc-config/commit/5a7d90e))
+
+
+
 <a name="5.0.0"></a>
 # [5.0.0](https://github.com/datkt/konanc-config/compare/4.2.0...5.0.0) (2018-11-07)
 
