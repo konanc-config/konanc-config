@@ -6,6 +6,7 @@ const kcc = require('../')
 
 const argv = minimist(process.argv.slice(2), {
   boolean: ['library', 'debug', 'repo', 'help', 'version', 'cflags'],
+  string: ['prefix'],
   alias: {
     h: 'help',
     D: 'debug',
@@ -21,6 +22,8 @@ const argv = minimist(process.argv.slice(2), {
     r: 'repo',
     repos: 'repo',
     repositories: 'repo',
+
+    p: 'prefix'
   }
 })
 
@@ -33,7 +36,8 @@ where options can be:
   -V, --version                 Print program version
   -c, --cflags                  Print compiler flags
   -r, --repos, --repositories   Print repositories
-  -l --libs, --libraries        Print libraries
+  -l, --libs, --libraries       Print libraries
+  -p, --prefix=<path>           Set repositories path prefix (default: 'node_modules/')
 
 
 Enable debug output by using the '-D, --debug' flag or set the
@@ -66,7 +70,7 @@ let loaded = false
 const seen = []
 
 try {
-  configs = argv._.map((config) => kcc.load(config))
+  configs = argv._.map((config) => load(config))
 } catch (err) {
   debug(err.stack || err)
   console.error('error:', err.message)
@@ -94,6 +98,10 @@ for (const config of configs) {
 if (!loaded) {
   console.error('error: Could not find configs to load for:', argv._.join(' '))
   process.exit(1)
+}
+
+function load(name) {
+  return kcc.load(name, null, { PREFIX: argv.prefix })
 }
 
 function printFlagBatch(flag, params) {
