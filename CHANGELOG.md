@@ -1,3 +1,13 @@
+<a name="5.0.3"></a>
+## [5.0.3](https://github.com/datkt/konanc-config/compare/5.0.2...5.0.3) (2018-11-07)
+
+
+### Bug Fixes
+
+* **bin/konanc-config:** Fix errors for empty config files ([a39ec74](https://github.com/datkt/konanc-config/commit/a39ec74))
+
+
+
 <a name="5.0.2"></a>
 ## [5.0.2](https://github.com/datkt/konanc-config/compare/5.0.1...5.0.2) (2018-11-07)
 
