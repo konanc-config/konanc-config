@@ -9,11 +9,20 @@ module.exports = load
 module.exports.load = load
 
 const PROTOCOL_REGEX = /[a-zA-Z0-9|+|-]+:\/\//
-const PREFIX = process.env.PREFIX || 'node_modules/'
+const PACKAGE_CONF = process.env.PACKAGE_CONF || 'package.kc'
 
 function load(name, defaults, env) {
   if (!name || 'string' != typeof name) {
     throw new TypeError("Expecting name to be a non-empty string.")
+  }
+
+  try {
+    if (statSync(name).isDirectory()) {
+      debug('resolved %s in %s', PACKAGE_CONF, name)
+      name = resolve(name, PACKAGE_CONF)
+    }
+  } catch (err) {
+    debug(err)
   }
 
   const config = '.kc' == extname(name) ? name : `${name}.kc`
@@ -22,6 +31,8 @@ function load(name, defaults, env) {
   if (!env || 'object' != typeof env) {
     env = {}
   }
+
+  const prefix = env.PREFIX || 'node_modules/'
 
   const conf = rc(name, defaults, { config }, (content) => {
     Object.assign(env, process.env, {
@@ -53,7 +64,7 @@ function load(name, defaults, env) {
   if (Array.isArray(conf.repo)) {
     // add prefixed repos
     for (const repo of conf.repo.slice()) {
-      const prefixed = PREFIX + repo
+      const prefixed = prefix + repo
       if (!conf.repo.includes(prefixed)) {
         conf.repo.push(prefixed)
       }
