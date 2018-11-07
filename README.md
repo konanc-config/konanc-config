@@ -18,39 +18,49 @@ release](https://github.com/datkt/konanc-config/releases/latest) page.
 ## Usage
 
 ```sh
-usage: konanc-config: [-hV] [options] <configs>
+usage: konanc-config: [-hDV] [options] <configs>
 
 where options can be:
 
   -h, --help                    Print this message
+  -D, --debug                   Enable debug output
   -V, --version                 Print program version
   -c, --cflags                  Print compiler flags
   -r, --repos, --repositories   Print repositories
-  -l --libs, --libraries        Print libraries
+  -l, --libs, --libraries       Print libraries
+  -p, --prefix=<path>           Set repositories path prefix (default: 'node_modules/')
 
+
+Enable debug output by using the '-D, --debug' flag or set the
+'DEBUG=konanc-config' environment variable.
+
+Report bugs to <https://github.com/datkt/konanc-config/issues>.
 ```
 
 ## Example
 
 ```sh
-$ konanc-config module.kc --libraries --repos --cflags
+$ konanc-config . --libraries --repos --cflags
 -opt -r /home/werle/repos/datkt/konanc-config/node_modules/@datkt -l sodium/sodium -l tape/tape
 ```
 
-where `module.kc` is
+where `.` contains a file called `package.kc`:
 
 ```ini
+repo[] = "node_modules/@datkt"
+cflags[] = -opt
+require[] = sodium/sodium
 library[] = sodium/sodium
 library[] = tape/tape
-cflags[] = -opt
-repo[] = "node_modules/@datkt"
 ```
 
-## Writing A Config File
+## Writing A Config File `package.kc`
 
 Configuration files for the `konanc-config` command are in INI or JSON
 format. Any property can be defined, but currently, the command only
-supports printing libraries, repositories, and compiler flags.
+supports printing libraries, repositories, and compiler flags. The
+`konanc-config` command will recognize `package.kc` files found in
+directories by default.
 
 ### Adding Libraries
 
