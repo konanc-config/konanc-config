@@ -1,5 +1,5 @@
-const { extname, dirname, resolve } = require('path')
-const { accessSync, statSync } = require('fs')
+const { extname, dirname, resolve, sep: PATH_SEPARATOR } = require('path')
+const { existsSync, accessSync, statSync } = require('fs')
 const { parse } = require('rc/lib/utils')
 const debug = require('debug')('konanc-config')
 const find = require('find-up').sync
@@ -17,15 +17,17 @@ function load(name, defaults, env) {
   }
 
   try {
-    if (statSync(name).isDirectory()) {
-      debug('resolved %s in %s', PACKAGE_CONF, name)
-      name = resolve(name, PACKAGE_CONF)
+    if ('.kc' != extname(name) && !existsSync(resolve(name + '.kc'))) {
+      if (statSync(name).isDirectory()) {
+        debug('resolved %s in %s', PACKAGE_CONF, name)
+        name = resolve(name, PACKAGE_CONF)
+      }
     }
   } catch (err) {
     debug(err)
   }
 
-  const config = '.kc' == extname(name) ? name : `${name}.kc`
+  const config = resolve('.kc' == extname(name) ? name : `${name}.kc`)
   const cwd = process.cwd()
 
   if (!env || 'object' != typeof env) {
@@ -47,102 +49,139 @@ function load(name, defaults, env) {
     return parse(template(content))
   })
 
-  if ('string' == typeof conf.library) {
-    conf.library = [ conf.library ]
+  if (!conf || !conf.config || !conf.configs || !conf.configs.length) {
+    return conf
   }
 
-  if ('string' == typeof conf.require) {
-    conf.require = [ conf.require ]
+  normalize('library')
+  normalize('require')
+  normalize('cflags')
+  normalize('repo')
+
+  // Addss prefixes to all repository paths ahead of time
+  // if not already defined by some configuration file. If
+  // the path does not exist, it will be filtered out later
+  for (const repo of conf.repo.slice()) {
+    const prefixed = prefix + repo
+    if (!conf.repo.includes(prefixed)) {
+      conf.repo.push(prefixed)
+    }
   }
 
-  if ('string' == typeof conf.repo) {
-    const { repo } = conf
+  // Attempts
+  for (const repo of conf.repo) {
+    if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
+      const relative = find(resolve(dirname(config), repo))
+      const resolved= find(repo)
 
-    if (!PROTOCOL_REGEX.test(repo)) {
-      conf.repo = [ resolve(dirname(config), repo) ]
+      if (relative && !conf.repo.includes(relative)) {
+        conf.repo.push(relative)
+      }
+
+      if ('/' != repo[0] && resolved && !conf.repo.includes(resolved)) {
+        conf.repo.push(resolved)
+      }
+    }
+  }
+
+  conf.repo = conf.repo.map((repo) => {
+    if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
+      return resolve(dirname(config), repo)
     } else {
-      conf.repo = [ repo ]
+      return repo
+    }
+  })
+
+  conf.repo = conf.repo.filter((repo) => {
+    if ('string' == typeof repo && PROTOCOL_REGEX.test(repo)) {
+      return true
     }
 
-    if (!conf.repo.includes(repo)) {
-      conf.repo.push(repo)
+    try {
+      return statSync(repo).isDirectory()
+    } catch (err) {
+      debug(err)
+      return false
     }
-  }
+  })
 
-  if (Array.isArray(conf.repo)) {
-    // add prefixed repos
-    for (const repo of conf.repo.slice()) {
-      const prefixed = prefix + repo
-      if (!conf.repo.includes(prefixed)) {
-        conf.repo.push(prefixed)
-      }
-    }
+  const children = []
 
-    for (const repo of conf.repo) {
-      if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
-        const path = resolve(repo)
-        const found = find(repo)
-
-        if (path && !conf.repo.includes(path)) {
-          conf.repo.push(path)
-        }
-
-        if ('/' != repo[0] && found && !conf.repo.includes(found)) {
-          conf.repo.push(found)
-        }
-      }
+  // 1. read each require, from left to right, loading respective conf
+  // 2. extend top level object from right to left: merge(objects[i], objects[i-1])
+  for (let dep of conf.require) {
+    if (!dep) {
+      continue
     }
 
-    conf.repo = conf.repo.map((repo) => {
-      if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
-        return resolve(dirname(config), repo)
-      } else {
-        return repo
-      }
-    })
-
-    conf.repo = conf.repo.filter((repo) => {
-      if ('string' == typeof repo && PROTOCOL_REGEX.test(repo)) {
-        return true
-      }
-
-      try {
-        accessSync(repo)
-        return statSync(repo).isDirectory()
-      } catch (err) {
-        debug(err)
-        return false
-      }
-    })
-  }
-
-  if (conf.require && conf.require.length) {
-    if (!Array.isArray(conf.require)) {
-      conf.require = [ conf.require ]
+    if ('.' == dep[0]) {
+      dep = resolve(dirname(config), dep)
     }
 
-    const repos = (conf.repo && !Array.isArray(conf.repo)
-      ? [ conf.repo ]
-      : conf.repo)
+    const prefixed = (prefix + dep)
+      .replace(
+        PATH_SEPARATOR.repeat(2),
+        PATH_SEPARATOR
+      )
 
-    for (const dep of conf.require) {
-      const prefixed = prefix + dep
-      merge(conf, load(dep, defaults, env))
-      merge(conf, load(prefixed, defaults, env))
-      if (Array.isArray(repos)) {
-        for (const repo of repos) {
-          if (repo && 'string' === typeof repo) {
-            merge(conf, load(resolve(repo, dep), defaults, env))
+    if (visit(dep)) {
+      debug('visit', dep);
+      children.push(visit.last)
+    } else if (visit(prefixed)) {
+      debug('visit (prefixed)', dep);
+      children.push(visit.last)
+    } else {
+      for (const repo of conf.repo) {
+        if (repo && 'string' === typeof repo) {
+          if (visit(resolve(repo, dep))) {
+            children.push(visit.last)
           }
         }
       }
     }
   }
 
+  for (let i = 0; i < children.length; ++i) {
+    merge(children[i], children[i + 1])
+  }
+
+  if (children.length) {
+    const { configs } = conf
+    merge(children[0], conf)
+    children[0].configs = configs
+    return children[0]
+  }
+
   return conf
 
+  function normalize(key) {
+    if ('string' == typeof conf[key]) {
+      conf[key] = [ conf[key] ]
+    }
+
+    if (!Array.isArray(conf[key])) {
+      conf[key] = []
+    }
+  }
+
+  function visit(dep) {
+    try {
+      const last = load(dep, defaults, env)
+      if (last && last.configs && last.configs.length) {
+        visit.last = last
+      } else {
+        visit.last = null
+      }
+    } catch (err) {
+      visit.last = null
+      debug(err)
+    }
+
+    return visit.last
+  }
+
   function merge(target, src) {
-    if (!target || !src ) {
+    if (!target || !src) {
       return
     }
 
@@ -152,30 +191,32 @@ function load(name, defaults, env) {
 
     for (const k in src) {
       if (Array.isArray(src[k])) {
-        if (Array.isArray(conf[k])) {
+        if (Array.isArray(target[k])) {
           for (const x of src[k]) {
-            if (!conf[k].includes(x)) {
-              conf[k].push(x)
+            if (!target[k].includes(x)) {
+              target[k].push(x)
             }
           }
-        } else if ('string' == typeof conf[k]) {
-          if (src[k].includes(conf[k])) {
-            conf[k] = src[k]
+        } else if ('string' == typeof target[k]) {
+          if (src[k].includes(target[k])) {
+            target[k] = src[k]
           } else {
-            conf[k] = [ conf[k] ].concat(src[k])
+            target[k] = [ target[k] ].concat(src[k])
           }
         } else {
-          conf[k] = src[k]
+          target[k] = src[k]
         }
       } else if ('string' == typeof src[k]) {
-        if (Array.isArray(conf[k])) {
-          if (!conf[k].includes(src[k])) {
-            conf[k].push(src[k])
+        if (Array.isArray(target[k])) {
+          if (!target[k].includes(src[k])) {
+            target[k].push(src[k])
           }
-        } else if ('string' == typeof conf[k]) {
-          if (conf[k] != src[k]) {
-            conf[k] = [ conf[k], src[k] ]
+        } else if ('string' == typeof target[k]) {
+          if (target[k] != src[k]) {
+            target[k] = [ target[k], src[k] ]
           }
+        } else {
+          target[k] = src[k]
         }
       } else if ('object' == typeof src[k]) {
         if ('object' == typeof target[k]) {
