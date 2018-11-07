@@ -1,3 +1,14 @@
+<a name="5.0.0"></a>
+# [5.0.0](https://github.com/datkt/konanc-config/compare/4.2.0...5.0.0) (2018-11-07)
+
+
+### Features
+
+* **bin/konanc-config:** Support repo path prefix from cli ([f453fbd](https://github.com/datkt/konanc-config/commit/f453fbd))
+* **index.js:** Support 'package.kc' and prefix from supplied 'env' ([bbbec15](https://github.com/datkt/konanc-config/commit/bbbec15))
+
+
+
 <a name="4.2.0"></a>
 # [4.2.0](https://github.com/datkt/konanc-config/compare/4.1.0...4.2.0) (2018-11-06)
 
