@@ -1,3 +1,8 @@
+<a name="5.1.0"></a>
+# [5.1.0](https://github.com/datkt/konanc-config/compare/5.0.3...5.1.0) (2018-11-07)
+
+
+
 <a name="5.0.3"></a>
 ## [5.0.3](https://github.com/datkt/konanc-config/compare/5.0.2...5.0.3) (2018-11-07)
 
