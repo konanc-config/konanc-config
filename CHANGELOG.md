@@ -1,3 +1,13 @@
+<a name="5.2.0"></a>
+# [5.2.0](https://github.com/datkt/konanc-config/compare/5.1.1...5.2.0) (2018-11-12)
+
+
+### Features
+
+* **index.js:** Resolve relative library paths if './' is in path prefix ([d6785c8](https://github.com/datkt/konanc-config/commit/d6785c8))
+
+
+
 <a name="5.1.1"></a>
 ## [5.1.1](https://github.com/datkt/konanc-config/compare/5.1.0...5.1.1) (2018-11-07)
 
