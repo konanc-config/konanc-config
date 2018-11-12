@@ -72,7 +72,7 @@ function load(name, defaults, env) {
   for (const repo of conf.repo) {
     if ('string' == typeof repo && !PROTOCOL_REGEX.test(repo)) {
       const relative = find(resolve(dirname(config), repo))
-      const resolved= find(repo)
+      const resolved = find(repo)
 
       if (relative && !conf.repo.includes(relative)) {
         conf.repo.push(relative)
@@ -103,6 +103,17 @@ function load(name, defaults, env) {
       debug(err)
       return false
     }
+  })
+
+  conf.library = conf.library.map((library) => {
+    if (!library || 'string' != typeof library) {
+      return ''
+    }
+
+    if ('.' + PATH_SEPARATOR == library.slice(0, 2)) {
+      return resolve(dirname(config), library)
+    }
+    return library
   })
 
   const children = []
