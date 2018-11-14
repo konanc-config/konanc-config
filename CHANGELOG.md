@@ -1,3 +1,13 @@
+<a name="5.3.0"></a>
+# [5.3.0](https://github.com/datkt/konanc-config/compare/5.2.0...5.3.0) (2018-11-14)
+
+
+### Features
+
+* **index.js:** Use prefix with name as fallback for top level loads ([a513054](https://github.com/datkt/konanc-config/commit/a513054))
+
+
+
 <a name="5.2.0"></a>
 # [5.2.0](https://github.com/datkt/konanc-config/compare/5.1.1...5.2.0) (2018-11-12)
 
