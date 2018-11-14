@@ -53,7 +53,7 @@ function load(name, defaults, env) {
     try {
       accessSync(resolve(prefix, name))
       return load(resolve(prefix, name), defaults, env)
-    } catch{
+    } catch (err) {
       return conf
     }
   }
