@@ -34,7 +34,7 @@ function load(name, defaults, env) {
     env = {}
   }
 
-  const prefix = env.PREFIX || 'node_modules/'
+  const prefix = env.PREFIX || 'node_modules' + PATH_SEPARATOR
 
   const conf = rc(name, defaults, { config }, (content) => {
     Object.assign(env, process.env, {
@@ -50,7 +50,12 @@ function load(name, defaults, env) {
   })
 
   if (!conf || !conf.config || !conf.configs || !conf.configs.length) {
-    return conf
+    try {
+      accessSync(resolve(prefix, name))
+      return load(resolve(prefix, name), defaults, env)
+    } catch{
+      return conf
+    }
   }
 
   normalize('library')
