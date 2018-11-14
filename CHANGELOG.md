@@ -1,3 +1,13 @@
+<a name="5.3.1"></a>
+## [5.3.1](https://github.com/datkt/konanc-config/compare/5.3.0...5.3.1) (2018-11-14)
+
+
+### Bug Fixes
+
+* **index.js:** Fix missing '()' in 'catch' statement ([d4fc295](https://github.com/datkt/konanc-config/commit/d4fc295))
+
+
+
 <a name="5.3.0"></a>
 # [5.3.0](https://github.com/datkt/konanc-config/compare/5.2.0...5.3.0) (2018-11-14)
 
