@@ -6,14 +6,14 @@ Command line utility to read `*.kc` konanc config files to print compiler flags.
 ## Installation
 
 ```sh
-$ npm install @datkt/konanc-config -g
+$ npm install konanc-config -g
 ```
 
 ## Latest Release
 
 Prebuilt binaries for `konanc-config` are available for download for Linux,
 Windows, and macOS. They can be downloaded from the [latest
-release](https://github.com/datkt/konanc-config/releases/latest) page.
+release](https://github.com/konanc-config/konanc-config/releases/latest) page.
 
 ## Usage
 
@@ -34,14 +34,14 @@ where options can be:
 Enable debug output by using the '-D, --debug' flag or set the
 'DEBUG=konanc-config' environment variable.
 
-Report bugs to <https://github.com/datkt/konanc-config/issues>.
+Report bugs to <https://github.com/konanc-config/konanc-config/issues>.
 ```
 
 ## Example
 
 ```sh
-$ konanc-config . --libraries --repos --cflags
--opt -r /home/werle/repos/datkt/konanc-config/node_modules/@datkt -l sodium/sodium -l tape/tape
+$ konanc-config . --libraries --repos
+-r /home/werle/repos/datkt/konanc-config/node_modules/@datkt -l sodium/sodium -l tape/tape
 ```
 
 where `.` contains a file called `package.kc`:
