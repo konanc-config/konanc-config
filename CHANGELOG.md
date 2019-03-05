@@ -1,3 +1,13 @@
+<a name="5.3.2"></a>
+## [5.3.2](https://github.com/datkt/konanc-config/compare/5.3.1...5.3.2) (2019-03-05)
+
+
+### Bug Fixes
+
+* **bin/konanc-config:** Pass in 'process.env' ([e91fcca](https://github.com/datkt/konanc-config/commit/e91fcca))
+
+
+
 <a name="5.3.1"></a>
 ## [5.3.1](https://github.com/datkt/konanc-config/compare/5.3.0...5.3.1) (2018-11-14)
 
