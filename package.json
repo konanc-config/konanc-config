@@ -36,12 +36,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/datkt/konanc-config.git"
+    "url": "git+https://github.com/konanc-config/konanc-config.git"
   },
   "bugs": {
-    "url": "https://github.com/datkt/konanc-config/issues"
+    "url": "https://github.com/konanc-config/konanc-config/issues"
   },
-  "homepage": "https://github.com/datkt/konanc-config#readme",
+  "homepage": "https://github.com/konanc-config/konanc-config#readme",
   "pkg": {
     "targets": [
       "node10-linux-x64",
