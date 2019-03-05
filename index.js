@@ -12,6 +12,8 @@ const PROTOCOL_REGEX = /[a-zA-Z0-9|+|-]+:\/\//
 const PACKAGE_CONF = process.env.PACKAGE_CONF || 'package.kc'
 
 function load(name, defaults, env) {
+  let resolved = false
+
   if (!name || 'string' != typeof name) {
     throw new TypeError("Expecting name to be a non-empty string.")
   }
@@ -21,10 +23,30 @@ function load(name, defaults, env) {
       if (statSync(name).isDirectory()) {
         debug('resolved %s in %s', PACKAGE_CONF, name)
         name = resolve(name, PACKAGE_CONF)
+        resolved = true
       }
     }
   } catch (err) {
     debug(err)
+  }
+  const paths = [
+    resolve('.'),
+    resolve('..'),
+    find(resolve('node_modules')),
+    find(resolve('..', 'node_modules'))
+  ].filter(Boolean)
+
+  try {
+    name = require.resolve(name, { paths })
+    resolved = true
+  } catch (err) {
+    debug(err)
+    try {
+      name = require.resolve(`${name}/${PACKAGE_CONF}`, { paths })
+      resolved = true
+    } catch (err) {
+      debug(err)
+    }
   }
 
   const config = resolve('.kc' == extname(name) ? name : `${name}.kc`)
@@ -48,6 +70,8 @@ function load(name, defaults, env) {
 
     return parse(template(content))
   })
+
+  resolved = true
 
   if (!conf || !conf.config || !conf.configs || !conf.configs.length) {
     try {
