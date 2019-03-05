@@ -71,7 +71,7 @@ let loaded = false
 const seen = []
 
 try {
-  configs = argv._.map((config) => load(config))
+  configs = argv._.map((config) => load(config, {}, process.env))
 } catch (err) {
   debug(err.stack || err)
   console.error('error:', err.message)
