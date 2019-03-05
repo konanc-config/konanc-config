@@ -1,3 +1,13 @@
+<a name="5.3.3"></a>
+## [5.3.3](https://github.com/datkt/konanc-config/compare/5.3.2...5.3.3) (2019-03-05)
+
+
+### Bug Fixes
+
+* **index.js:** Try module resolution for a path ([4a84f17](https://github.com/datkt/konanc-config/commit/4a84f17))
+
+
+
 <a name="5.3.2"></a>
 ## [5.3.2](https://github.com/datkt/konanc-config/compare/5.3.1...5.3.2) (2019-03-05)
 
