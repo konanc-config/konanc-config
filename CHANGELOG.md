@@ -1,3 +1,13 @@
+<a name="5.4.2"></a>
+## [5.4.2](https://github.com/konanc-config/konanc-config/compare/5.4.1...5.4.2) (2019-03-09)
+
+
+### Bug Fixes
+
+* **.:** Fix recursive look up issues ([f2bbf09](https://github.com/konanc-config/konanc-config/commit/f2bbf09))
+
+
+
 <a name="5.4.1"></a>
 ## [5.4.1](https://github.com/konanc-config/konanc-config/compare/5.4.0...5.4.1) (2019-03-05)
 
