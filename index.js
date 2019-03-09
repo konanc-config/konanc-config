@@ -2,6 +2,7 @@ const { extname, dirname, resolve, sep: PATH_SEPARATOR } = require('path')
 const { existsSync, accessSync, statSync } = require('fs')
 const { parse } = require('rc/lib/utils')
 const debug = require('debug')('konanc-config')
+const union = require('array-union')
 const find = require('find-up').sync
 const rc = require('rc')
 
@@ -11,7 +12,7 @@ module.exports.load = load
 const PROTOCOL_REGEX = /[a-zA-Z0-9|+|-]+:\/\//
 const PACKAGE_CONF = process.env.PACKAGE_CONF || 'package.kc'
 
-function load(name, defaults, env) {
+function load(name, defaults, env, children) {
   let resolved = false
 
   if (!name || 'string' != typeof name) {
@@ -29,11 +30,12 @@ function load(name, defaults, env) {
   } catch (err) {
     debug(err)
   }
+
   const paths = [
     resolve('.'),
-    resolve('..'),
+    find(resolve('..', 'node_modules')),
     find(resolve('node_modules')),
-    find(resolve('..', 'node_modules'))
+    resolve('..'),
   ].filter(Boolean)
 
   try {
@@ -71,12 +73,17 @@ function load(name, defaults, env) {
     return parse(template(content))
   })
 
+
   resolved = true
 
   if (!conf || !conf.config || !conf.configs || !conf.configs.length) {
     try {
       accessSync(resolve(prefix, name))
-      return load(resolve(prefix, name), defaults, env)
+      if (name != resolve(prefix, name)) {
+        return load(resolve(prefix, name), defaults, env, children)
+      } else {
+        return conf
+      }
     } catch (err) {
       return conf
     }
@@ -145,7 +152,7 @@ function load(name, defaults, env) {
     return library
   })
 
-  const children = []
+  children = children || []
 
   // 1. read each require, from left to right, loading respective conf
   // 2. extend top level object from right to left: merge(objects[i], objects[i-1])
@@ -206,7 +213,7 @@ function load(name, defaults, env) {
 
   function visit(dep) {
     try {
-      const last = load(dep, defaults, env)
+      const last = load(dep, defaults, env, children)
       if (last && last.configs && last.configs.length) {
         visit.last = last
       } else {
@@ -230,43 +237,15 @@ function load(name, defaults, env) {
     }
 
     for (const k in src) {
-      if (Array.isArray(src[k])) {
-        if (Array.isArray(target[k])) {
-          for (const x of src[k]) {
-            if (!target[k].includes(x)) {
-              target[k].push(x)
-            }
-          }
-        } else if ('string' == typeof target[k]) {
-          if (src[k].includes(target[k])) {
-            target[k] = src[k]
-          } else {
-            target[k] = [ target[k] ].concat(src[k])
-          }
-        } else {
-          target[k] = src[k]
-        }
-      } else if ('string' == typeof src[k]) {
-        if (Array.isArray(target[k])) {
-          if (!target[k].includes(src[k])) {
-            target[k].push(src[k])
-          }
-        } else if ('string' == typeof target[k]) {
-          if (target[k] != src[k]) {
-            target[k] = [ target[k], src[k] ]
-          }
-        } else {
-          target[k] = src[k]
-        }
-      } else if ('object' == typeof src[k]) {
-        if ('object' == typeof target[k]) {
-          merge(src[k], target[k])
-        } else if (null != target[k] && 'undefined' != typeof target[k]) {
-          throw new TypeError("Cannot merge source object into target string.")
-        } else {
-          target[k] = src[k]
-        }
+      if (!Array.isArray(src[k])) {
+        src[k] = [ src[k] ]
       }
+
+      if (!Array.isArray(target[k])) {
+        target[k] = [ target[k] ]
+      }
+
+      target[k] = union(target[k], src[k])
     }
   }
 

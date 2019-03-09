@@ -25,6 +25,7 @@
   "author": "Joseph Werle <werle@littlstar.com>",
   "license": "MIT",
   "dependencies": {
+    "array-union": "^1.0.2",
     "debug": "^4.1.1",
     "find-up": "^3.0.0",
     "minimist": "^1.2.0",
